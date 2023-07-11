@@ -142,7 +142,7 @@ for (i in 0:3000){
   edges=rbind(edges,c(5*i+5,5*i+1))
   edges=rbind(edges,c(5*i+1,5*i+6),c(5*i+2,5*i+7),c(5*i+3,5*i+8),c(5*i+4,5*i+9))
   edges=rbind(edges,c(5*i+5,5*i+10))
-  state=c(state,c(1,1,-1,1,-1,1,1,-1,1,-1,1,1,-1,1,-1,1,1,-1,1,-1))
+  state=c(state,c(1,1,-1,1,-1,1,1,-1,1,-1))
 }
 
 edges=matrix(as.character(edges),nrow(edges),ncol(edges))
