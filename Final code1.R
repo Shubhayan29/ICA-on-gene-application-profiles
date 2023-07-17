@@ -39,25 +39,20 @@ ICs=function(X,Pi1,Pi2,r){
         Combined_indep_comps = cbind(Combined_indep_comps, Indep_components$S)
       }else{
         #Number of PCs required for explaining Pi2 proportion
-        N_2 = Proportion_of_Variance[-(1:N_1)]
-        names(N_2) <- seq_along(N_2)
         Combined_indep_comps = matrix(, nrow = nrow(X), ncol = 0)
         
         cores <- detectCores()
         cl <- makeCluster(cores[1]-1) #not to overload your computer
         registerDoParallel(cl)
         
+        N_tot=min(which(Total_explained > Pi1+Pi2 |
+                          Total_explained == Pi1+Pi2))
+        
+        N_2=N_tot-N_1
+        
         Combined_indep_comps = foreach(x = 1:r, .combine=cbind,.packages = c("fastICA")) %dopar%  {
-          v2 <- c()
-          repeat {
-            v2 <- c(v2, sample(N_2[!N_2 %in% v2], 1))
-            if (sum(v2) > Pi2 | sum(v2) == Pi2)
-              break
-          }
           
-          as.integer(names(v2))
-          T = sapply(as.integer(names(v2)), function(x)
-            x + N_1)
+          T=sample(c((N_1 +1):ncol(PCs$rotation)),N_2,replace=FALSE)
           
           #Applying ICA on the combined PCs
           Combined_PCs = cbind(PCs$rotation[, 1:N_1], PCs$rotation[, T])
@@ -168,7 +163,7 @@ library("SeqNet")
 n_genes=20000
 
 #number of persons
-n_persons=5000
+n_persons=8000
 
 #generate the underlying network structure over which the RNA sequence dataset will be generated.
 network=random_network(n_genes)
@@ -188,7 +183,7 @@ P1=c(0.75,0.8,0.85,0.9)
 P2=c(0.05,0.08,0.1,0.12,0.15)
 
 #List that will contain all the independent components of the first dataset.
-IC_lst1=c()
+#IC_lst1=c()
 
 
 for (Pi1 in P1){
@@ -196,7 +191,9 @@ for (Pi1 in P1){
     for (i in 1:30){
       for (r in RUN){
         if (Pi1+Pi2<1 || Pi1+Pi2==1){
-          IC_lst1=c(IC_lst1,list(ndatapoints=(500*i),runs=r,PI1=Pi1,PI2=Pi2,ICs(expr_1[1:(500*i),],Pi1,Pi2,r)))
+          
+          #IC_lst1=c(IC_lst1,list(ndatapoints=(500*i),runs=r,PI1=Pi1,PI2=Pi2,ICs(expr_1[1:(500*i),],Pi1,Pi2,r)))
+          save(list(ndatapoints=(500*i),runs=r,PI1=Pi1,PI2=Pi2,ICs(expr_1[1:(500*i),],Pi1,Pi2,r)),file=file_name1,ascii = FALSE,oldstyle=FALSE)
         }
       }
     }
@@ -204,7 +201,7 @@ for (Pi1 in P1){
 }
 
 #List that will contain all the independent components of the second dataset.
-IC_lst2=c()
+#IC_lst2=c()
 
 
 for (Pi1 in P1){
@@ -212,7 +209,9 @@ for (Pi1 in P1){
     for (i in 1:20){
       for (r in RUN){
         if (Pi1+Pi2<1 || Pi1+Pi2==1){
-          IC_lst2=c(IC_lst2,list(ndatapoints=(1000*i),runs=r,PI1=Pi1,PI2=Pi2,ICs(expr_2[1:(1000*i),],Pi1,Pi2,r)))
+          
+          #IC_lst2=c(IC_lst2,list(ndatapoints=(1000*i),runs=r,PI1=Pi1,PI2=Pi2,ICs(expr_2[1:(1000*i),],Pi1,Pi2,r)))
+          save(list(ndatapoints=(1000*i),runs=r,PI1=Pi1,PI2=Pi2,ICs(expr_2[1:(1000*i),],Pi1,Pi2,r)),file=file_name2,ascii=FALSE,oldstyle=FALSE)
         }
       }
     }
