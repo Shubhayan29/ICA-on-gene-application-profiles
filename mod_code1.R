@@ -93,7 +93,7 @@ library("igraph"); library("gplots"); library("scales")
 edges=c()
 state=c()
 
-for (i in 0:3000){
+for (i in 0:4500){
   edges=rbind(edges,c(5*i+1,5*i+2),c(5*i+2,5*i+3),c(5*i+3,5*i+4),c(5*i+4,5*i+5))
   edges=rbind(edges,c(5*i+5,5*i+1))
   edges=rbind(edges,c(5*i+1,5*i+6),c(5*i+2,5*i+7),c(5*i+3,5*i+8),c(5*i+4,5*i+9))
@@ -121,7 +121,7 @@ RUN_1=c(100,250,500,750,900,1000,2000,2500,3000,4500,5000)
 #List that will contain all the independent components of the first dataset.
 IC_lst1=c()
 
-for (i in 1:30){
+for (i in 21:45){
   for (N_1 in N1_1){
     for (run in RUN_1){
       for (N_2 in N2_1){
@@ -164,7 +164,7 @@ RUN_2=c(100,250,500,750,900,1000,2000,2500,3000,4500,5000)
 #List that will contain all the independent components of the second dataset.
 IC_lst2=c()
 
-for (i in 1:20){
+for (i in 10:20){
   for (N_1 in N1_2){
     for (run in RUN_2){
       for (N_2 in N2_2){
